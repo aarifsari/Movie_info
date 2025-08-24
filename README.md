@@ -1,8 +1,5 @@
 # BIM308 HW1 — Movie Info Web Application
 
-## Purpose
-The aim of this assignment is to develop a basic web application using **ASP.NET Web Application (.NET Framework)**. The application is designed to list movie information, display details, and provide simple interaction to the user.
-
 ## Technologies Used
 - **C# / ASP.NET Framework (Web Forms or MVC)**
 - **Visual Studio 2022** development environment
