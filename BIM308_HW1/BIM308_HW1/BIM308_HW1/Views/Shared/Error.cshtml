@@ -1,0 +1,11 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Error";
+}
+
+<div class="container mt-4">
+    <div class="alert alert-warning text-center">
+        <h4>You need to log in to view your cart.</h4>
+        <a asp-controller="Login" asp-action="Index" class="btn btn-primary">Log In</a>
+    </div>
+</div>

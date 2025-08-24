@@ -1,0 +1,37 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Home";
+}
+
+@model List<BIM308_HW1.Models.Movie>
+
+<div class="container">
+    <h2 class="mt-4">Movies</h2>
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        @foreach (var movie in Model)
+        {
+            <div class="col">
+                <div class="card h-100">
+                    <img src="@(string.IsNullOrEmpty(movie.ImageUrl) ? "/images/default.jpg" : movie.ImageUrl)" class="card-img-top" alt="@movie.Title" style="height: 300px; object-fit: cover;">
+                    <div class="card-body">
+                        <h5 class="card-title">@movie.Title</h5>                   
+                        <a asp-controller="Movie" asp-action="Info" asp-route-id="@movie.MovieID" class="btn btn-primary">View Details</a>
+                        <div class="card-footer">
+                            RATING ★★★☆☆
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    @if (string.IsNullOrEmpty(HttpContextAccessor.HttpContext?.Request.Cookies["UserInfo"]))
+    {
+        <div class="alert alert-info text-center mt-4">
+            <p>Please log in to add movies to your cart.</p>
+            <a asp-controller="Login" asp-action="Index" class="btn btn-primary">Go to Login</a>
+        </div>
+    }
+</div>

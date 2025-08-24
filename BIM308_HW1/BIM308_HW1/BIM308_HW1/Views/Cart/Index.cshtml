@@ -1,0 +1,43 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Cart";
+}
+
+@model List<int>
+
+<div class="container mt-4">
+    @{
+        var cart = Model as List<int> ?? new List<int>();
+        var movies = HttpContextAccessor.HttpContext?.Session.GetObject<List<BIM308_HW1.Models.Movie>>("Movies");
+    }
+    @if (cart == null || !cart.Any() || movies == null)
+    {
+        <div class="alert alert-info text-center">
+            <p>Your cart is empty.</p>
+            <a asp-controller="Home" asp-action="Index" class="btn btn-primary">Return To Main Page</a>
+        </div>
+    }
+    else
+    {
+        <ul class="list-group">
+            @foreach (var movieId in cart)
+            {
+                var movie = movies?.FirstOrDefault(m => m.MovieID == movieId);
+                if (movie != null)
+                {
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        @movie.Title
+                        <form asp-action="RemoveFromCart" method="post" class="ms-2" style="display:inline;">
+                            <input type="hidden" name="id" value="@movieId" />
+                            <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+                        </form>
+                    </li>
+                }
+            }
+        </ul>
+        <a asp-controller="Home" asp-action="Index" class="btn btn-secondary mt-3">Return To Main Page</a>
+    }
+</div>

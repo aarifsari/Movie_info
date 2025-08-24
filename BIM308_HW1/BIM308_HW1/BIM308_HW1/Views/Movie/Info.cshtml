@@ -1,0 +1,83 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Movie Info";
+}
+
+@model BIM308_HW1.Models.Movie
+
+<div class="container mt-4">
+    @if (Model == null)
+    {
+        <div class="alert alert-danger text-center">
+            <h4>Invalid Movie ID!!!</h4>
+            <a asp-controller="Home" asp-action="Index" class="btn btn-primary">Return to Main Page</a>
+        </div>
+    }
+    else
+    {
+        <h2 class="mb-4">Movie Details</h2>
+        <div class="row">
+            <div class="col-md-4">
+                <img src="@(string.IsNullOrEmpty(Model.ImageUrl) ? "/images/default.jpg" : Model.ImageUrl)" class="card-img-top img-fluid" alt="@Model.Title">
+            </div>
+            <div class="col-md-8">
+                <div class="card-body">
+                    <h5 class="card-title">@Model.Title</h5>
+                    <p class="card-text"><strong>Director:</strong> @Model.Director</p>
+                    <p class="card-text"><strong>Stars:</strong> @string.Join(", ", Model.Stars ?? new string[] { "Unknown" })</p>
+                    <p class="card-text"><strong>Release Year:</strong> @Model.ReleaseYear</p>
+                    @if (ViewBag.IsLoggedIn)
+                    {
+                        <form asp-action="AddToCart" method="post" id="addToCartForm">
+                            <input type="hidden" name="id" value="@Model.MovieID" />
+                            <button type="submit" class="btn btn-primary">Add to Cart</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <p class="text-warning">Please log in to add this movie to your cart.</p>
+                        <a asp-controller="Login" asp-action="Index" class="btn btn-primary">Go to Login</a>
+                    }
+                    @if (TempData["AddToCartMessage"] != null)
+                    {
+                        <div class="alert alert-success mt-3">@TempData["AddToCartMessage"]</div>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="mt-3">
+            <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Return To Main Page</a>
+            <a asp-controller="Cart" asp-action="Index" class="btn btn-secondary">Display Shopping Cart</a>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#addToCartForm").submit(function (e) {
+                e.preventDefault();
+                $.ajax({
+                    url: '@Url.Action("AddToCart", "Movie")',
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    success: function (response) {
+                        if (response.success) {
+                            $("#addToCartForm").after('<div class="alert alert-success mt-3">The movie is added for the first time!</div>');
+                        } else {
+                            $("#addToCartForm").after('<div class="alert alert-warning mt-3">The movie was already in the cart!</div>');
+                        }
+                        setTimeout(function () { $(".alert").fadeOut(); }, 3000);
+                    },
+                    error: function () {
+                        alert("An error occurred while adding to cart.");
+                    }
+                });
+            });
+        });
+    </script>
+}

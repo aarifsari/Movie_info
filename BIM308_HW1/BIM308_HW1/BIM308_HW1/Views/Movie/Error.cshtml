@@ -1,0 +1,13 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Error";
+}
+
+@model BIM308_HW1.Models.ErrorViewModel
+
+<div class="container mt-4">
+    <div class="alert alert-warning text-center">
+        <h4>@(Model?.Message ?? "Please log in to view your cart.")</h4>
+        <a asp-controller="Login" asp-action="Index" class="btn btn-primary">Go to Login</a>
+    </div>
+</div>
